@@ -3,15 +3,21 @@
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
-              [goog.history.EventType :as EventType])
+              [goog.history.EventType :as EventType]
+              [reagent.core :as r]
+              [flux-challenge-reagent.ws-client :as ws])
     (:import goog.History))
+
+;; -------------------------
+;; State
+(defonce current-planet (r/atom {}))
 
 ;; -------------------------
 ;; Views
 
 (defn home-page []
   [:div {:class "css-root"}
-   [:h1 {:class "css-planet-monitor"} "Obi-Wan currently on Tatooine"]
+   [:h1 {:class "css-planet-monitor"} (str "Obi-Wan currently on " (get @current-planet "name"))]
 
    [:section {:class "css-scrollable-list"}
     [:ul {:class "css-slots"}
@@ -57,10 +63,19 @@
     (.setEnabled true)))
 
 ;; -------------------------
+;; Websocket
+(defn update-current-planet! [message]
+  (reset! current-planet message))
+
+(defn subscribe-to-current-planet! []
+  (ws/make-websocket! "ws://localhost:4000" update-current-planet!))
+
+;; -------------------------
 ;; Initialize app
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))
 
 (defn init! []
   (hook-browser-navigation!)
-  (mount-root))
+  (mount-root)
+  (subscribe-to-current-planet!))
