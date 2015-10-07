@@ -10,12 +10,7 @@
 ;; Views
 
 (defn home-page []
-  [:div [:h2 "Welcome to flux-challenge-reagent"]
-   [:div [:a {:href "#/about"} "go to about page"]]])
-
-(defn about-page []
-  [:div [:h2 "About flux-challenge-reagent"]
-   [:div [:a {:href "#/"} "go to the home page"]]])
+  [:div [:h2 "Welcome to flux-challenge-reagent"]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -26,9 +21,6 @@
 
 (secretary/defroute "/" []
   (session/put! :current-page #'home-page))
-
-(secretary/defroute "/about" []
-  (session/put! :current-page #'about-page))
 
 ;; -------------------------
 ;; History
