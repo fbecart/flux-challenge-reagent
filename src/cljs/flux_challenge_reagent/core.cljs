@@ -10,7 +10,30 @@
 ;; Views
 
 (defn home-page []
-  [:div [:h2 "Welcome to flux-challenge-reagent"]])
+  [:div {:class "css-root"}
+   [:h1 {:class "css-planet-monitor"} "Obi-Wan currently on Tatooine"]
+
+   [:section {:class "css-scrollable-list"}
+    [:ul {:class "css-slots"}
+     [:li {:class "css-slot"}
+      [:h3 "Jorak Uln"]
+      [:h6 "Homeworld: Korriban"]]
+     [:li {:class "css-slot"}
+      [:h3 "Skere Kaan"]
+      [:h6 "Homeworld: Coruscant"]]
+     [:li {:class "css-slot"}
+      [:h3 "Na'daz"]
+      [:h6 "Homeworld: Ryloth"]]
+     [:li {:class "css-slot"}
+      [:h3 "Kas'im"]
+      [:h6 "Homeworld: Nal Hutta"]]
+     [:li {:class "css-slot"}
+      [:h3 "Darth Bane"]
+      [:h6 "Homeworld: Apatros"]]]]
+
+   [:div {:class "css-scroll-buttons"}
+    [:button {:class "css-button-up"}]
+    [:button {:class "css-button-down"}]]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
