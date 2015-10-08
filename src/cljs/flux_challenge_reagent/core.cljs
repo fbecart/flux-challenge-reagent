@@ -5,15 +5,22 @@
               [goog.events :as events]
               [goog.history.EventType :as EventType]
               [reagent.core :as r]
-              [flux-challenge-reagent.ws-client :as ws])
+              [flux-challenge-reagent.ws-client :as ws]
+              [ajax.core :refer [GET]])
     (:import goog.History))
 
 ;; -------------------------
 ;; State
 (defonce current-planet (r/atom {}))
+(defonce sith-lords-list (r/atom []))
 
 ;; -------------------------
 ;; Views
+
+(defn render-sith-lord [sith-lord]
+  [:li {:class "css-slot" :key (get sith-lord "id")}
+   [:h3 (get sith-lord "name")]
+   [:h6 (str "Homeworld: " (get-in sith-lord ["homeworld" "name"]))]])
 
 (defn home-page []
   [:div {:class "css-root"}
@@ -21,21 +28,7 @@
 
    [:section {:class "css-scrollable-list"}
     [:ul {:class "css-slots"}
-     [:li {:class "css-slot"}
-      [:h3 "Jorak Uln"]
-      [:h6 "Homeworld: Korriban"]]
-     [:li {:class "css-slot"}
-      [:h3 "Skere Kaan"]
-      [:h6 "Homeworld: Coruscant"]]
-     [:li {:class "css-slot"}
-      [:h3 "Na'daz"]
-      [:h6 "Homeworld: Ryloth"]]
-     [:li {:class "css-slot"}
-      [:h3 "Kas'im"]
-      [:h6 "Homeworld: Nal Hutta"]]
-     [:li {:class "css-slot"}
-      [:h3 "Darth Bane"]
-      [:h6 "Homeworld: Apatros"]]]]
+     (map render-sith-lord @sith-lords-list)]]
 
    [:div {:class "css-scroll-buttons"}
     [:button {:class "css-button-up"}]
@@ -71,6 +64,21 @@
   (ws/make-websocket! "ws://localhost:4000" update-current-planet!))
 
 ;; -------------------------
+;; Sith Lords list
+(defn handle-sith-lord-response [response]
+  (swap! sith-lords-list conj response)
+  (if (< (count @sith-lords-list) 5)
+    (request-sith-lord (get-in response ["apprentice" "id"]))))
+
+(defn request-sith-lord [id]
+  (GET (str "http://localhost:3000/dark-jedis/" id)
+       :response-format :json
+       :handler handle-sith-lord-response))
+
+(defn request-darth-sidious []
+  (request-sith-lord "3616"))
+
+;; -------------------------
 ;; Initialize app
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))
@@ -78,4 +86,5 @@
 (defn init! []
   (hook-browser-navigation!)
   (mount-root)
-  (subscribe-to-current-planet!))
+  (subscribe-to-current-planet!)
+  (request-darth-sidious))
