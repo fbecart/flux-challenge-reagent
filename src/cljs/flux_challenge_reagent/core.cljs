@@ -18,21 +18,21 @@
 ;; Views
 
 (defn render-sith-lord [sith-lord]
-  [:li {:class "css-slot" :key (get sith-lord "id")}
+  [:li.css-slot {:key (get sith-lord "id")}
    [:h3 (get sith-lord "name")]
    [:h6 (str "Homeworld: " (get-in sith-lord ["homeworld" "name"]))]])
 
 (defn home-page []
-  [:div {:class "css-root"}
-   [:h1 {:class "css-planet-monitor"} (str "Obi-Wan currently on " (get @current-planet "name"))]
+  [:div.css-root
+   [:h1.css-planet-monitor (str "Obi-Wan currently on " (get @current-planet "name"))]
 
-   [:section {:class "css-scrollable-list"}
-    [:ul {:class "css-slots"}
+   [:section.css-scrollable-list
+    [:ul.css-slots
      (map render-sith-lord @sith-lords-list)]]
 
-   [:div {:class "css-scroll-buttons"}
-    [:button {:class "css-button-up"}]
-    [:button {:class "css-button-down"}]]])
+   [:div.css-scroll-buttons
+    [:button.css-button-up
+    [:button.css-button-down]]]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
