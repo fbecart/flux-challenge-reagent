@@ -1,8 +1,8 @@
 (ns flux-challenge-reagent.core
     (:require [reagent.core :as r]
-              [flux-challenge-reagent.ws-client :as ws]
               [flux-challenge-reagent.http-client :as http]
-              [flux-challenge-reagent.util :as util]))
+              [flux-challenge-reagent.util :as util]
+              [flux-challenge-reagent.current-planet :as current-planet]))
 
 ;; -------------------------
 ;; Constant parameters
@@ -12,7 +12,6 @@
 
 ;; -------------------------
 ;; State
-(defonce current-planet (r/atom {}))
 (defonce sith-lords-list (r/atom (repeat list-size nil)))
 (defonce next-apprentice-request (r/atom nil))
 (defonce next-master-request (r/atom nil))
@@ -21,7 +20,7 @@
 ;; Views
 (defn render-sith-lord [sith-lord]
   [:li.css-slot
-   (if (= (get sith-lord "homeworld") @current-planet)
+   (if (= (get sith-lord "homeworld") @current-planet/state)
      {:class "current-planet-match"}
      {})
    (if (some? sith-lord)
@@ -30,7 +29,7 @@
 
 (defn home-page []
   [:div.css-root
-   [:h1.css-planet-monitor (str "Obi-Wan currently on " (get @current-planet "name"))]
+   [:h1.css-planet-monitor (str "Obi-Wan currently on " (get @current-planet/state "name"))]
 
    [:section.css-scrollable-list
     [:ul.css-slots
@@ -39,11 +38,6 @@
    [:div.css-scroll-buttons
     [:button.css-button-up {:on-click scroll-up!}]
     [:button.css-button-down {:on-click scroll-down!}]]])
-
-;; -------------------------
-;; Websocket
-(defn update-current-planet! [message]
-  (reset! current-planet message))
 
 ;; -------------------------
 ;; Sith Lords list
@@ -89,5 +83,5 @@
 ;; Initialize app
 (defn init! []
   (r/render-component [home-page] (.getElementById js/document "app"))
-  (ws/make-websocket! "ws://localhost:4000" update-current-planet!)
+  (current-planet/init-websocket-connection!)
   (request-sith-lord next-apprentice-request darth-sidious-url handle-next-apprentice!))
