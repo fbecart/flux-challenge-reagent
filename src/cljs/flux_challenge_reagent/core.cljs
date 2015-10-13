@@ -19,13 +19,14 @@
 ;; -------------------------
 ;; Views
 (defn render-sith-lord [sith-lord]
-  [:li.css-slot
-   (if (= (get sith-lord "homeworld") @current-planet/state)
-     {:class "current-planet-match"}
-     {})
-   (if (some? sith-lord)
-     (list [:h3 (get sith-lord "name")]
-           [:h6 (str "Homeworld: " (get-in sith-lord ["homeworld" "name"]))]))])
+  (if sith-lord
+    [:li.css-slot
+     (if (= (get sith-lord "homeworld") @current-planet/state)
+       {:class "current-planet-match"}
+       {})
+     [:h3 (get sith-lord "name")]
+     [:h6 (str "Homeworld: " (get-in sith-lord ["homeworld" "name"]))]]
+    [:li.css-slot]))
 
 (defn home-page []
   [:div.css-root
@@ -33,7 +34,9 @@
 
    [:section.css-scrollable-list
     [:ul.css-slots
-     (map render-sith-lord @sith-lords-list)]]
+     (doall (map-indexed
+             #(with-meta (render-sith-lord %2) {:key %1})
+             @sith-lords-list))]]
 
    [:div.css-scroll-buttons
     [:button.css-button-up {:on-click scroll-up!}]
