@@ -16,7 +16,6 @@
                  [hiccup "1.0.5"]
                  [environ "1.0.1"]
                  [org.clojure/clojurescript "1.7.122" :scope "provided"]
-                 [secretary "1.2.3"]
                  [com.cognitect/transit-cljs "0.8.225"]
                  [cljs-ajax "0.5.0"]]
 

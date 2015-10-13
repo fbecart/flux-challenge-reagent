@@ -1,14 +1,8 @@
 (ns flux-challenge-reagent.core
-    (:require [reagent.core :as reagent :refer [atom]]
-              [reagent.session :as session]
-              [secretary.core :as secretary :include-macros true]
-              [goog.events :as events]
-              [goog.history.EventType :as EventType]
-              [reagent.core :as r]
+    (:require [reagent.core :as r]
               [flux-challenge-reagent.ws-client :as ws]
               [flux-challenge-reagent.http-client :as http]
-              [flux-challenge-reagent.util :as util])
-    (:import goog.History))
+              [flux-challenge-reagent.util :as util]))
 
 ;; -------------------------
 ;; Constant parameters
@@ -25,7 +19,6 @@
 
 ;; -------------------------
 ;; Views
-
 (defn render-sith-lord [sith-lord]
   [:li.css-slot
    (if (some? sith-lord)
@@ -44,34 +37,10 @@
     [:button.css-button-up {:on-click scroll-up!}]
     [:button.css-button-down {:on-click scroll-down!}]]])
 
-(defn current-page []
-  [:div [(session/get :current-page)]])
-
-;; -------------------------
-;; Routes
-(secretary/set-config! :prefix "#")
-
-(secretary/defroute "/" []
-  (session/put! :current-page #'home-page))
-
-;; -------------------------
-;; History
-;; must be called after routes have been defined
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (events/listen
-     EventType/NAVIGATE
-     (fn [event]
-       (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
-
 ;; -------------------------
 ;; Websocket
 (defn update-current-planet! [message]
   (reset! current-planet message))
-
-(defn subscribe-to-current-planet! []
-  (ws/make-websocket! "ws://localhost:4000" update-current-planet!))
 
 ;; -------------------------
 ;; Sith Lords list
@@ -115,11 +84,7 @@
 
 ;; -------------------------
 ;; Initialize app
-(defn mount-root []
-  (reagent/render [current-page] (.getElementById js/document "app")))
-
 (defn init! []
-  (hook-browser-navigation!)
-  (mount-root)
-  (subscribe-to-current-planet!)
+  (r/render-component [home-page] (.getElementById js/document "app"))
+  (ws/make-websocket! "ws://localhost:4000" update-current-planet!)
   (request-sith-lord next-apprentice-request darth-sidious-url handle-next-apprentice!))
