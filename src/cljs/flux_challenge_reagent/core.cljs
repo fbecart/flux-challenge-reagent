@@ -21,6 +21,9 @@
 ;; Views
 (defn render-sith-lord [sith-lord]
   [:li.css-slot
+   (if (= (get sith-lord "homeworld") @current-planet)
+     {:class "current-planet-match"}
+     {})
    (if (some? sith-lord)
      (list [:h3 (get sith-lord "name")]
            [:h6 (str "Homeworld: " (get-in sith-lord ["homeworld" "name"]))]))])

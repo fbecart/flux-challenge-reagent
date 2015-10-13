@@ -62,6 +62,10 @@ body {
   margin-top: 7px;
 }
 
+.css-slot.current-planet-match {
+  color: red
+}
+
 .css-scroll-buttons {
   flex: 1 20%;
   display: flex;
