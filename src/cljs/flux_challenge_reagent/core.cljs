@@ -19,7 +19,7 @@
 ;; -------------------------
 ;; State
 (defonce current-planet (r/atom {}))
-(defonce sith-lords-list (r/atom (vec (repeat list-size nil))))
+(defonce sith-lords-list (r/atom (repeat list-size nil)))
 (defonce next-apprentice-request (r/atom nil))
 (defonce next-master-request (r/atom nil))
 
@@ -78,8 +78,8 @@
 (defn handle-next-apprentice! [apprentice]
   (reset! next-apprentice-request nil)
   (swap! sith-lords-list
-         #(util/reverse-vec-fn util/replace-nil-head-end % apprentice))
-  (if (nil? (peek @sith-lords-list))
+         #(util/reverse-seq-fn util/replace-nil-head-end % apprentice))
+  (if (nil? (peek (vec @sith-lords-list)))
     (load-next-apprentice)))
 
 (defn handle-next-master! [master]
@@ -110,7 +110,7 @@
   (load-next-apprentice))
 
 (defn scroll-up! []
-  (swap! sith-lords-list #(util/reverse-vec-fn util/slide % scroll-range))
+  (swap! sith-lords-list #(util/reverse-seq-fn util/slide % scroll-range))
   (load-next-master))
 
 ;; -------------------------

@@ -1,14 +1,14 @@
 (ns flux-challenge-reagent.util)
 
-(defn nil-head-count [v]
-  (count (take-while nil? v)))
+(defn nil-head-count [coll]
+  (count (take-while nil? coll)))
 
-(defn slide [v n]
-  (vec (concat (subvec v n) (repeat n nil))))
+(defn slide [coll n]
+  (subvec (vec (concat coll (repeat n nil))) n))
 
-(defn reverse-vec-fn [f v & params]
-  (vec (reverse (apply f (conj params (vec (reverse v)))))))
+(defn reverse-seq-fn [f coll & params]
+  (reverse (apply f (conj params (reverse coll)))))
 
 (defn replace-nil-head-end [coll x]
   (let [nil-head-end-index (- (nil-head-count coll) 1)]
-    (assoc coll nil-head-end-index x)))
+    (assoc (vec coll) nil-head-end-index x)))
