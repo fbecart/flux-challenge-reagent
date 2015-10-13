@@ -17,11 +17,7 @@
              :content "width=device-width, initial-scale=1"}]
      (include-css (if (env :dev) "css/styles.css" "css/styles.min.css"))]
     [:body
-     [:div#app
-      [:h3 "ClojureScript has not been compiled!"]
-      [:p "please run "
-       [:b "lein figwheel"]
-       " in order to start the compiler"]]
+     [:div#app]
      (include-js "js/app.js")]]))
 
 (defroutes routes
