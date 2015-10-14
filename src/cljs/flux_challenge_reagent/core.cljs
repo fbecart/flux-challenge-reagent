@@ -5,8 +5,8 @@
 
 ;; -------------------------
 ;; Views
-(defn render-sith-lord [sith-lord]
-  (if sith-lord
+(defn render-sith-lord [item]
+  (if-let [sith-lord (:sith-lord item)]
     [:li.css-slot
      (if (= (get sith-lord "homeworld") @current-planet/state)
        {:class "current-planet-match"}

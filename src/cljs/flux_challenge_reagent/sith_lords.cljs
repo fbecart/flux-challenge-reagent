@@ -18,13 +18,13 @@
 (defn handle-next-apprentice! [apprentice]
   (reset! next-apprentice-request nil)
   (swap! coll
-         #(util/reverse-seq-fn util/replace-nil-head-end % apprentice))
+         #(util/reverse-seq-fn util/replace-nil-head-end % {:url (:url apprentice) :sith-lord apprentice}))
   (if (nil? (peek (vec @coll)))
     (load-next-apprentice)))
 
 (defn handle-next-master! [master]
   (reset! next-master-request nil)
-  (swap! coll util/replace-nil-head-end master)
+  (swap! coll util/replace-nil-head-end {:url (:url master) :sith-lord master})
   (if (nil? (first @coll))
     (load-next-master)))
 
@@ -36,12 +36,12 @@
              current-request))))
 
 (defn load-next-apprentice []
-  (let [last-sith-lord (first (filter some? (reverse @coll)))]
+  (let [last-sith-lord (:sith-lord (first (filter some? (reverse @coll))))]
     (if-let [apprentice-url (get-in last-sith-lord ["apprentice" "url"])]
       (request-sith-lord next-apprentice-request apprentice-url handle-next-apprentice!))))
 
 (defn load-next-master []
-  (let [first-sith-lord (first (filter some? @coll))
+  (let [first-sith-lord (:sith-lord (first (filter some? @coll)))
         master-url (get-in first-sith-lord ["master" "url"])]
     (request-sith-lord next-master-request master-url handle-next-master!)))
 
