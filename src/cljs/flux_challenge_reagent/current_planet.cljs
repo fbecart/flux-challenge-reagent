@@ -4,5 +4,8 @@
 
 (defonce state (r/atom {}))
 
+(defn is? [planet]
+  (= planet @state))
+
 (defn init-websocket-connection! []
   (ws/make-websocket! "ws://localhost:4000" #(reset! state %)))

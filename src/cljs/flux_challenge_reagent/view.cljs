@@ -5,7 +5,7 @@
 (defn sith-lord [item]
   (if-let [sith-lord (:sith-lord item)]
     [:li.css-slot
-     (if (= (get sith-lord "homeworld") @current-planet/state)
+     (if (current-planet/is? (get sith-lord "homeworld"))
        {:class "current-planet-match"}
        {})
      [:h3 (get sith-lord "name")]
@@ -24,6 +24,10 @@
 
    [:div.css-scroll-buttons
     [:button.css-button-up
-     {:on-click #(sith-lords/scroll! 2 :up)}]
+     (if (sith-lords/frozen?)
+       {:class "css-button-disabled"}
+       {:on-click #(sith-lords/scroll! 2 :up)})]
     [:button.css-button-down
-     {:on-click #(sith-lords/scroll! 2 :down)}]]])
+     (if (sith-lords/frozen?)
+       {:class "css-button-disabled"}
+       {:on-click #(sith-lords/scroll! 2 :down)})]]])

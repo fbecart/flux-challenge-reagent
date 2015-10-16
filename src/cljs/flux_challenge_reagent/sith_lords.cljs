@@ -1,9 +1,14 @@
 (ns flux-challenge-reagent.sith-lords
     (:require [reagent.core :as r]
               [ajax.core :as ajax]
-              [flux-challenge-reagent.util :as util]))
+              [flux-challenge-reagent.util :as util]
+              [flux-challenge-reagent.current-planet :as current-planet]))
 
 (defonce coll (r/atom (vec (repeat 5 nil))))
+
+(defn frozen? []
+  (let [sith-lords-homeworlds (map #(get-in % [:sith-lord "homeworld"]) @coll)]
+    (not (empty? (filter current-planet/is? sith-lords-homeworlds)))))
 
 (defn sith-lord-url [id]
   (str "http://localhost:3000/dark-jedis/" id))
