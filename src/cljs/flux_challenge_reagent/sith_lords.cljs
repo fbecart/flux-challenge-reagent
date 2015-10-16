@@ -3,16 +3,8 @@
               [ajax.core :as ajax]
               [flux-challenge-reagent.util :as util]))
 
-;; -------------------------
-;; Constant parameters
-(def darth-sidious-id 3616)
+(defonce coll (r/atom (vec (repeat 5 nil))))
 
-;; -------------------------
-;; State
-(defonce coll (r/atom nil))
-
-;; -------------------------
-;; Sith Lords list
 (defn sith-lord-url [id]
   (str "http://localhost:3000/dark-jedis/" id))
 
@@ -67,4 +59,5 @@
                 (reduce #(scroll-once! %1 direction) coll (range n)))))
 
 (defn init! []
-  (reset! coll (request-sith-lord! (vec (repeat 5 nil)) 0 darth-sidious-id)))
+  (let [darth-sidious-id 3616]
+    (swap! coll #(request-sith-lord! % 0 darth-sidious-id))))
