@@ -2,8 +2,8 @@
   (:require [flux-challenge-reagent.current-planet :as current-planet]
             [flux-challenge-reagent.sith-lords :as sith-lords]))
 
-(defn sith-lord [item]
-  (if-let [sith-lord (:sith-lord item)]
+(defn sith-lord [sith-lord]
+  (if sith-lord
     [:li.css-slot
      (if (current-planet/is? (get sith-lord "homeworld"))
        {:class "current-planet-match"}
@@ -20,7 +20,7 @@
     [:ul.css-slots
      (doall (map-indexed
              #(with-meta (sith-lord %2) {:key %1})
-             @sith-lords/coll))]]
+             (sith-lords/sith-lords)))]]
 
    [:div.css-scroll-buttons
     [:button.css-button-up
