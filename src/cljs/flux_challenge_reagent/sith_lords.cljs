@@ -21,12 +21,9 @@
 (defn sith-lords []
   (map :sith-lord @items))
 
-(defn- pending-sith-lord-item [id]
-  (if id {:id id} nil))
-
 (defn- assoc-pending-sith-lord [items index id]
-  (if (and (>= index 0) (< index (count items)) id (nil? (get items index)))
-    (assoc items index (pending-sith-lord-item id))
+  (if (and (>= index 0) (< index (count items)) (nil? (get-in items [index :id])))
+    (assoc items index {:id id})
     items))
 
 (defn- abort-request! [item]
@@ -67,12 +64,12 @@
   (case direction
     :up (let [first-sith-lord (-> items first :sith-lord)
               master-id (get-in first-sith-lord ["master" "id"])
-              master-item (pending-sith-lord-item master-id)]
+              master-item {:id master-id}]
           (abort-request! (peek items))
           (into [master-item] (pop items)))
     :down (let [last-sith-lord (-> items last :sith-lord)
                 apprentice-id (get-in last-sith-lord ["apprentice" "id"])
-                apprentice-item (pending-sith-lord-item apprentice-id)]
+                apprentice-item {:id apprentice-id}]
             (abort-request! (nth items 0))
             (conj (subvec items 1) apprentice-item))))
 
