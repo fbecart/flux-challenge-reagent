@@ -13,6 +13,10 @@
 (defn frozen? []
   (homeworld-matches? @coll @current-planet/state))
 
+(defn any-misses? [rel]
+  (let [loaded-sith-lords (filter some? (map :sith-lord @coll))]
+    (not (empty? (filter nil? (map #(get-in % [rel "id"]) loaded-sith-lords))))))
+
 (defn pending-sith-lord-item [id]
   (if id {:id id} nil))
 

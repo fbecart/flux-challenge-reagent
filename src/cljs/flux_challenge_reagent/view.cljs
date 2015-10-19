@@ -24,10 +24,10 @@
 
    [:div.css-scroll-buttons
     [:button.css-button-up
-     (if (sith-lords/frozen?)
+     (if (or (sith-lords/frozen?) (sith-lords/any-misses? "master"))
        {:class "css-button-disabled"}
        {:on-click #(sith-lords/scroll! 2 :up)})]
     [:button.css-button-down
-     (if (sith-lords/frozen?)
+     (if (or (sith-lords/frozen?) (sith-lords/any-misses? "apprentice"))
        {:class "css-button-disabled"}
        {:on-click #(sith-lords/scroll! 2 :down)})]]])
