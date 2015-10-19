@@ -4,7 +4,7 @@
               [flux-challenge-reagent.util :as util]
               [flux-challenge-reagent.current-planet :as current-planet]))
 
-(defonce coll (r/atom (vec (repeat 5 nil))))
+(defonce coll (r/atom (vec (repeat 5 nil)) :validator vector?))
 
 (defn frozen? []
   (let [sith-lords-homeworlds (map #(get-in % [:sith-lord "homeworld"]) @coll)]
