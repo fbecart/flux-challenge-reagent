@@ -50,7 +50,7 @@
 (defn- accept-sith-lord [items sith-lord]
   (let [sith-lord-id (get sith-lord "id")
         sith-lord-index (util/index-of (map :id items) sith-lord-id)]
-    (-> (vec items)
+    (-> items
         (assoc sith-lord-index {:id (get sith-lord "id") :sith-lord sith-lord})
         (assoc-pending-sith-lord (inc sith-lord-index) (get-in sith-lord ["apprentice" "id"]))
         (assoc-pending-sith-lord (dec sith-lord-index) (get-in sith-lord ["master" "id"])))))
