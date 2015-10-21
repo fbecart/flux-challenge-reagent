@@ -35,7 +35,7 @@
 
 (defn- start-request! [item]
   (if-let [id (:id item)]
-    (if (not (or (contains? item :sith-lord) (contains? item :request)))
+    (if (not (some item '(:sith-lord :request)))
       (let [url (str "http://localhost:3000/dark-jedis/" id)
             request (ajax/GET url :response-format :json :handler handle-sith-lord-response!)]
         (assoc item :request request))
