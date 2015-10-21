@@ -4,6 +4,8 @@
             [flux-challenge-reagent.current-planet :as current-planet]
             [flux-challenge-reagent.sith-lords :as sith-lords]))
 
+(enable-console-print!)
+
 (defn mount-root []
   (r/render-component [view/dashboard] (.getElementById js/document "app")))
 

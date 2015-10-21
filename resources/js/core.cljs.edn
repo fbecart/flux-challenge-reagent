@@ -1,0 +1,2 @@
+{:require  [flux-challenge-reagent.core]
+ :init-fns [flux-challenge-reagent.core/init!]}
