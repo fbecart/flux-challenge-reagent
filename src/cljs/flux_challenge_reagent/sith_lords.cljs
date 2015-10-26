@@ -7,7 +7,7 @@
 (defonce ^:private items (r/atom (vec (repeat 5 nil)) :validator vector?))
 
 (defn- homeworld-matches? [items current-planet]
-  (let [sith-lords-homeworlds (map #(get-in % [:sith-lord "homeworld"]) items)]
+  (let [sith-lords-homeworlds (map #(get-in % [:data "homeworld"]) items)]
      (not (empty? (filter #(= % current-planet) sith-lords-homeworlds)))))
 
 (defn frozen? []
@@ -15,11 +15,11 @@
 
 (defn any-misses? [rel]
   {:pre [(some #{rel} '("master" "apprentice"))]}
-  (let [loaded-sith-lords (filter some? (map :sith-lord @items))]
+  (let [loaded-sith-lords (filter some? (map :data @items))]
     (not (empty? (filter nil? (map #(get-in % [rel "id"]) loaded-sith-lords))))))
 
 (defn sith-lords []
-  (map :sith-lord @items))
+  (map :data @items))
 
 (defn- assoc-pending-sith-lord [items index id]
   (if (and (>= index 0) (< index (count items)) (nil? (get-in items [index :id])))
@@ -35,7 +35,7 @@
 
 (defn- start-request! [item]
   (if-let [id (:id item)]
-    (if (not (some item '(:sith-lord :request)))
+    (if (not (some item '(:data :request)))
       (let [url (str "http://localhost:3000/dark-jedis/" id)
             request (ajax/GET url :response-format :json :handler handle-sith-lord-response!)]
         (assoc item :request request))
@@ -51,7 +51,7 @@
   (let [sith-lord-id (get sith-lord "id")
         sith-lord-index (util/index-of (map :id items) sith-lord-id)]
     (-> items
-        (assoc sith-lord-index {:id (get sith-lord "id") :sith-lord sith-lord})
+        (assoc sith-lord-index {:id (get sith-lord "id") :data sith-lord})
         (assoc-pending-sith-lord (inc sith-lord-index) (get-in sith-lord ["apprentice" "id"]))
         (assoc-pending-sith-lord (dec sith-lord-index) (get-in sith-lord ["master" "id"])))))
 
@@ -62,12 +62,12 @@
 
 (defn- scroll-once! [items direction]
   (case direction
-    :up (let [first-sith-lord (-> items first :sith-lord)
+    :up (let [first-sith-lord (-> items first :data)
               master-id (get-in first-sith-lord ["master" "id"])
               master-item {:id master-id}]
           (abort-request! (peek items))
           (into [master-item] (pop items)))
-    :down (let [last-sith-lord (-> items last :sith-lord)
+    :down (let [last-sith-lord (-> items last :data)
                 apprentice-id (get-in last-sith-lord ["apprentice" "id"])
                 apprentice-item {:id apprentice-id}]
             (abort-request! (nth items 0))
