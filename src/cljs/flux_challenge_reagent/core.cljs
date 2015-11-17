@@ -12,4 +12,4 @@
 (defn init! []
   (mount-root)
   (current-planet/init-websocket-connection!)
-  (sith-lords/init! 3616))
+  (sith-lords/init!))
