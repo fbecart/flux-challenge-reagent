@@ -6,10 +6,14 @@
 
 (enable-console-print!)
 
-(defn mount-root []
+(defn mount-root
+  "Initializes the Reagent view."
+  []
   (r/render-component [view/dashboard] (.getElementById js/document "app")))
 
-(defn init! []
+(defn init!
+  "Entry point of the application. Initializes its various components."
+  []
   (mount-root)
   (current-planet/init-websocket-connection!)
   (sith-lords/init!))

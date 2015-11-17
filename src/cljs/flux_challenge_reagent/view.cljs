@@ -1,9 +1,22 @@
 (ns flux-challenge-reagent.view
+  "HTML interface renderer"
   (:require [flux-challenge-reagent.current-planet :as current-planet]
             [flux-challenge-reagent.sith-lords :as sith-lords]
             [flux-challenge-reagent.sith-lord :as sith-lord]))
 
-(defn sith-lord [sith-lord]
+(defn- frozen?
+  "Returns true if the dashboard should appear frozen."
+  []
+  (sith-lords/some-item? (sith-lord/homeworld-matches? @current-planet/state)))
+
+(defn- missing-rel?
+  "Returns true if at least one sith-lord misses the provided relation."
+  [rel]
+  (sith-lords/some-item? (sith-lord/misses-rel? rel)))
+
+(defn- sith-lord
+  "Renders a single Sith Lord."
+  [sith-lord]
   (if sith-lord
     [:li.css-slot
      (if (current-planet/is? (get sith-lord "homeworld"))
@@ -13,13 +26,12 @@
      [:h6 (str "Homeworld: " (get-in sith-lord ["homeworld" "name"]))]]
     [:li.css-slot]))
 
-(defn frozen? []
-  (sith-lords/some-item? (sith-lord/homeworld-matches? @current-planet/state)))
-
-(defn missing-rel? [rel]
-  (sith-lords/some-item? (sith-lord/misses-rel? rel)))
-
-(defn dashboard []
+(defn dashboard
+  "Renders the complete user interface, constituted of the following components:
+  * current planet;
+  * sith lords list;
+  * up/down buttons."
+  []
   [:div.css-root
    [:h1.css-planet-monitor (str "Obi-Wan currently on " (get @current-planet/state "name"))]
 
